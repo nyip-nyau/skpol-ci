@@ -1,2 +1,2 @@
 # skpol
-SKPOL
+SKPOL menggunakan codeigniter
