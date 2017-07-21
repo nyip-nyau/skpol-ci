@@ -218,7 +218,7 @@
 						</div>
 						<div class="col-sm-5">
 							<div class="input-group">
-								<input name="file_name_siup" type="text" class="form-control" placeholder="Upload File IUP" for="file_iup" readonly>
+								<input name="file_name_iup" type="text" class="form-control" placeholder="Upload File IUP" for="file_iup" readonly>
 								<span class="input-group-btn">
 									<div class="btn btn-primary btn-file">
 										<span class="icon iconmoon-file-3"></span> Upload <input type="file" name="file_iup">
@@ -240,7 +240,7 @@
 						</div>
 						<div class="col-sm-5">
 							<div class="input-group">
-								<input name="file_name_iup" type="text" class="form-control" placeholder="Upload File SIUP" for="file_siup" readonly>
+								<input name="file_name_siup" type="text" class="form-control" placeholder="Upload File SIUP" for="file_siup" readonly>
 								<span class="input-group-btn">
 									<div class="btn btn-primary btn-file">
 										<span class="icon iconmoon-file-3"></span> Upload <input type="file" name="file_siup">

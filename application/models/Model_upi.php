@@ -117,6 +117,16 @@ class Model_upi extends CI_Model {
 		}
 	}
 
+	function _delete_register_user($id) {
+		$this->db->where('id_user',$id);
+		$q = $this->db->delete('tbl_user');
+		if($q){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	function _update_upi($id, $data){
 		$this->db->where(array('idtbl_upi'=>$id));
 		$q = $this->db->update('tbl_upi',$data);
@@ -139,6 +149,12 @@ class Model_upi extends CI_Model {
 
 	function _get_provinsi(){
 		$q = $this->db->get('tbl_provinsi');
+		return $q->result_array();
+	}
+
+	// get user_id from tbl_register_upi
+	function _get_user_from_register_upi($id) {
+		$q = $this->db->get_where('tbl_register_upi',array('idtbl_upi'=>$id));
 		return $q->result_array();
 	}
 }

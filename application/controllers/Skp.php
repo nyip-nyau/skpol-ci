@@ -16,7 +16,7 @@ class Skp extends MY_Controller {
 	{
 		$data['page_title'] 	= 'Formulir Pengajuan SKP';
 		// $data['getKategori']	= $this->model_skp->_get_kategori_produk();
-		$data['getProduk']		= $this->model_skp->_get_produk();
+		$data['getProduk']		= $this->model_skp->_get_produk("1");
 		$data['content'] 		= 'pages_content/skp/view_create_skp';
 		$this->load->view('index',$data);
 	}

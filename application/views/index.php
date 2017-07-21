@@ -59,7 +59,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<!-- copyright -->
-							<p class="nm text-muted">&copy; 2016 by <a target="_blank" href="https://makrodevs.com">Makrodevs</a> </p>
+							<p class="nm text-muted">&copy; <?php echo date('Y'); ?> by <a target="_blank" href="https://makrodevs.com">Makrodevs</a> </p>
 
 							<!--/ copyright -->
 						</div>

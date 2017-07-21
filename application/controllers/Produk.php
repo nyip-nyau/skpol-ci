@@ -11,7 +11,7 @@ class Produk extends MY_Controller {
 	public function view_produk_list()
 	{
 		$data['page_title'] = 'Produk Terdaftar';
-		$data['produk']		= $this->model_produk->_get_produk(1);
+		$data['produk']		= $this->model_produk->_get_produk("1");
 		$data['content'] 	= 'pages_content/produk/view_produk_list';
         $this->load->view('index',$data);
 	}
@@ -58,7 +58,7 @@ class Produk extends MY_Controller {
 
 	}
 	public function delete_current_product($id){
-		if($this->model_produk->_delete_produk($id)){
+		if($this->model_produk->_soft_delete_produk($id)){
 			$this->nyast->notif_create_notification('Data Produk Telah Dihapus','Hapus Berhasil');
 			redirect(site_url('produk/view_produk_list'));
 		}

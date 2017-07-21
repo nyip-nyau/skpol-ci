@@ -10,8 +10,10 @@ class Model_produk extends CI_Model {
 
 	function _get_produk($p = null){
 		if($p != null){
+			$this->db->order_by('idtbl_produk','desc');
 			$q = $this->db->get_where('tbl_produk',array('status_produk'=>$p));
 		}else{
+			$this->db->order_by('idtbl_produk','desc');
 			$q = $this->db->get('tbl_produk');
 		}
 		return $q->result_array();
@@ -45,4 +47,18 @@ class Model_produk extends CI_Model {
 			return false;
 		}
 	}
+
+	/*
+		perform soft delete mechanism to prevent data inconsistency
+	*/
+	function _soft_delete_produk($id){
+		$this->db->where('idtbl_produk',$id);
+		$q = $this->db->update('tbl_produk',array('status_produk'=>'2'));
+		if($q){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 }

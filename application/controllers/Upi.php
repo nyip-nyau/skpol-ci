@@ -168,6 +168,12 @@ class Upi extends MY_Controller {
 
 	public function action_update_upi(){
 		if( $this->input->post('submit') != NULL ){
+            // DEBUG ONLY !!!!
+            // $data['siup'] = $this->input->post('file_name_siup');
+            // $data['iup'] = $this->input->post('file_name_iup');
+            // $data['akta'] = $this->input->post('file_name_akta');
+            // var_dump($data);
+            $idupi = $this->input->post('idupi');
 			// building data
 			$data['upi'] = array(
 				'nama_upi'			=> strtoupper($this->input->post('nama')),
@@ -201,13 +207,18 @@ class Upi extends MY_Controller {
 				$this->upload->initialize($config);
 				if($this->upload->do_upload('file_akta')){
 					$fileData['akta'] = $this->upload->data();
-				}
-				// remove old data
-				$pathAkta = '.'.$this->input->post('old_akta_path');
-				if(file_exists($pathAkta)){
-					unlink($pathAkta);
-				}
-				$data['upi']['fileakta_upi'] = '/file/upi/file_akta/'.$fileData['akta']['file_name'];
+                    // remove old data if new data uploaded
+    				$pathAkta = '.'.$this->input->post('old_akta_path');
+    				if(file_exists($pathAkta)){
+                        // implement `@` to prevent error if linked data doesn't exists
+    					@unlink($pathAkta);
+    				}
+    				$data['upi']['fileakta_upi'] = '/file/upi/file_akta/'.$fileData['akta']['file_name'];
+            	} else {
+                    $extraError = $this->upload->display_errors();
+                    $this->nyast->notif_create_notification('Detail Gagal Dirubah \n'.$extraError,'Gagal');
+    				redirect(site_url('upi/edit_detail/'.$idupi));
+                }
 			}
 			if($this->input->post('file_name_iup')!=null){
 				// upload file and replace
@@ -216,28 +227,38 @@ class Upi extends MY_Controller {
 				$this->upload->initialize($config);
 				if($this->upload->do_upload('file_iup')){
 					$fileData['iup'] = $this->upload->data();
-				}
-				// remove old data
-				$pathIup = '.'.$this->input->post('old_iup_path');
-				if(file_exists($pathIup)){
-					unlink($pathIup);
-				}
-				$data['upi']['fileiup_upi'] = '/file/upi/file_iup/'.$fileData['iup']['file_name'];
+                    // remove old data
+    				$pathIup = '.'.$this->input->post('old_iup_path');
+    				if(file_exists($pathIup)){
+                        // implement `@` to prevent error if linked data doesn't exists
+    					@unlink($pathIup);
+    				}
+    				$data['upi']['fileiup_upi'] = '/file/upi/file_iup/'.$fileData['iup']['file_name'];
+                } else {
+                    $extraError = $this->upload->display_errors();
+                    $this->nyast->notif_create_notification('Detail Gagal Dirubah \n'.$extraError,'Gagal');
+    				redirect(site_url('upi/edit_detail/'.$idupi));
+                }
 			}
 			if($this->input->post('file_name_siup')!=null){
 				// upload file and replace
 				$config['upload_path'] = './file/upi/file_siup';
 				$config['file_name'] = str_replace(' ','-',$this->input->post('nama')).'-'.str_replace(array('/','.'),'',$this->input->post('nosiup'));
-				$this->upload->initialize($config);
+                $this->upload->initialize($config);
 				if($this->upload->do_upload('file_siup')){
 					$fileData['siup'] = $this->upload->data();
-				}
-				// remove old data
-				$pathSiup = '.'.$this->input->post('old_siup_path');
-				if(file_exists($pathSiup)){
-					unlink($pathSiup);
-				}
-				$data['upi']['filesiup_upi'] = '/file/upi/file_siup/'.$fileData['siup']['file_name'];
+                    // remove old data
+    				$pathSiup = '.'.$this->input->post('old_siup_path');
+    				if(file_exists($pathSiup)){
+                        // implement `@` to prevent error if linked data doesn't exists
+    					@unlink($pathSiup);
+    				}
+    				$data['upi']['filesiup_upi'] = '/file/upi/file_siup/'.$fileData['siup']['file_name'];
+                } else {
+                    $extraError = $this->upload->display_errors();
+                    $this->nyast->notif_create_notification('Detail Gagal Dirubah \n'.$extraError,'Gagal');
+    				redirect(site_url('upi/edit_detail/'.$idupi));
+                }
 			}
 			if(null != $this->input->post('revisi')){
 				$data['revisi']=array(
@@ -247,17 +268,28 @@ class Upi extends MY_Controller {
 			}
 			if ($this->model_upi->_update_upi($this->input->post('idupi'),$data['upi'])) {
 				$this->nyast->notif_create_notification('Data Berhasil Dirubah','Berhasil');
-				if ($this->session->userdata($this->session_prefix.'-userlevel')=='upi') {
-					redirect(site_url('upi/edit_detail'));
-				}else{
-					redirect(site_url('upi/view_list'));
-				}
+				redirect(site_url('upi/edit_detail/'.$idupi));
 			}else {
 				$this->nyast->notif_create_notification('Detail Gagal Dirubah','Gagal');
-				redirect(site_url('upi/edit_detail'));
+				redirect(site_url('upi/edit_detail/'.$idupi));
 			}
 		}else{
-			redirect(site_url('upi/edit_detail'));
+			redirect(site_url());
 		}
 	}
+
+    public function action_delete_upi($id) {
+        // check if id is valid integer
+        if ($id != null && is_numeric($id) && $id > 0) {
+            // delete from get user_id from tbl_register_upi
+            $result = $this->model_upi->_get_user_from_register_upi($id);
+            $user_id = $result[0]['user_id'];
+            // delete from tbl_user
+            if($this->model_upi->_delete_register_user($user_id)){
+                // delete from tbl_register_upi
+                $this->model_upi->_delete_reg_upi($id);
+            }
+            redirect(site_url('upi/filing_list'));
+        }
+    }
 }
