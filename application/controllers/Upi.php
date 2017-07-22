@@ -198,6 +198,7 @@ class Upi extends MY_Controller {
 			);
 			$config['allowed_types']        = 'jpg|jpeg|pdf|doc|docx';
 			$config['overwrite']            = 1;
+            $config['max_size']             = 0; // unlimited file upload
 			$this->load->library('upload', $config);
 			$fileData = array();
 			if($this->input->post('file_name_akta')!=null){
