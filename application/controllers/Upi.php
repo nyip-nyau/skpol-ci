@@ -283,6 +283,17 @@ class Upi extends MY_Controller {
         if ($id != null && is_numeric($id) && $id > 0) {
             // delete from get user_id from tbl_register_upi
             $result = $this->model_upi->_get_user_from_register_upi($id);
+            // remove data from register upi
+            $paths[] = '.'.$result[0]['filesiup_upi'];
+            $paths[] = '.'.$result[0]['fileakta_upi'];
+            $paths[] = '.'.$result[0]['fileiup_upi'];
+            // remove file if exists
+            foreach($paths as $v) {
+                if(file_exists($v)){
+                    // implement `@` to prevent error if linked data doesn't exists
+                    @unlink($v);
+                }
+            }
             $user_id = $result[0]['user_id'];
             // delete from tbl_user
             if($this->model_upi->_delete_register_user($user_id)){
