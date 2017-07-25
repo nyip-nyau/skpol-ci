@@ -31,9 +31,14 @@ class Kunjungan extends MY_Controller {
 			if($this->upload->do_upload('file_perbaikan')){
 				$fileData	= $this->upload->data();
 				foreach($this->input->post('perbaikan') as $k){
-					$ke 			= explode('-',$k);
+					$ke 			= explode('_',$k);
 					$idskp 			= $ke[0];
 					$idkunjungan 	= $ke[1];
+					
+					$pathPerbaikan = '.'.$ke[2];
+					if (file_exists($pathPerbaikan)) {
+						@unlink($pathPerbaikan);
+					}
 					$dt = array(
 						'perbaikan_kunjungan'	=> '/file/perbaikan/'.$fileData['file_name'],
 						'status_kunjungan'	=> 'Menunggu Persetujuan Pembina Mutu'
@@ -189,6 +194,71 @@ class Kunjungan extends MY_Controller {
 			$data['perbaikan'] = $this->model_kunjungan->_get_kunjungan('','',$idskp);
 		}
 		$this->load->view('index',$data);
+	}
+
+	public function perbaikan_edit($idskp)
+	{
+		$data['page_title'] = 'Informasi Detail Temuan';
+		$data['content'] = 'pages_content/skp/view_perbaikan_edit';
+		if($this->level == 'dinas'){
+			$data['perbaikan'] = $this->model_kunjungan->_get_kunjungan('','dinas',$idskp);
+		}elseif($this->level == 'kp'){
+			$data['perbaikan'] = $this->model_kunjungan->_get_kunjungan('','kp',$idskp);
+		}else{
+			$data['perbaikan'] = $this->model_kunjungan->_get_kunjungan('','',$idskp);
+		}
+		$this->load->view('index',$data);
+	}
+
+	function action_perbaikan_edit(){
+		if( $this->input->post('submit') != NULL ){
+			$idskp = $this->input->post('idskp');
+			$idkunjungan = $this->input->post('idkunjungan');
+			$data['kunjungan'] = array(
+				'pic_kunjungan'		=> $this->input->post('pic_kunjungan'),
+				'tgl_kunjungan'		=> $this->input->post('tanggal_kunjungan'),
+				'status_kunjungan'	=> 'Menunggu Perbaikan'
+			);
+			$config['allowed_types']        = 'jpg|jpeg|pdf|doc|docx';
+			$config['overwrite']            = 1;
+            $config['max_size']             = 0; // unlimited file upload
+			$this->load->library('upload', $config);
+			// $fileData = array();
+			if($this->input->post('file_name_temuan')!=null){
+				// upload file and replace
+				$config['upload_path'] = './file/temuan';
+				$config['file_name'] = 'temuan-'.date('y-m-d--his');
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('file_temuan')){
+					$fileData['temuan_kunjungan'] = $this->upload->data();
+                    // remove old data if new data uploaded
+    				$pathTemuan = '.'.$this->input->post('old_temuan_path');
+    				if(file_exists($pathTemuan)){
+                        // implement `@` to prevent error if linked data doesn't exists
+    					@unlink($pathTemuan);
+    				}
+    				$data['kunjungan']['temuan_kunjungan'] = '/file/temuan/'.$fileData['temuan_kunjungan']['file_name'];
+
+    				// $this->nyast->notif_create_notification('Upload Temuan Berhasil','Selamat');
+					// redirect(site_url('kunjungan/approval_list'));
+
+                	$this->model_skp->_create_skp_log('Revisi Perbaikan',$idskp);
+            	} else {
+                    $extraError = $this->upload->display_errors();
+                    $this->nyast->notif_create_notification('Detail Gagal Dirubah \n'.$extraError,'Gagal');
+    				redirect(site_url('kunjungan/perbaikan_edit/'.$idskp));
+                }
+			}
+			// update kunjungan
+			if ($this->model_kunjungan->_update_kunjungan($data['kunjungan'],$idskp,$idkunjungan)) {
+				$this->nyast->notif_create_notification('Data Berhasil Dirubah','Berhasil');
+				redirect(site_url('kunjungan/approval_list/'));
+			}else{
+				$this->nyast->notif_create_notification('Detail Gagal Dirubah','Gagal');
+				redirect(site_url('kunjungan/perbaikan_detail/'.$idskp));
+			}
+			
+		}
 	}
 
 	public function approval_list()

@@ -25,31 +25,38 @@
 							<?php $x=1; foreach($skpdata as $i=>$v){ ?>
 	                        <tr>
 	                            <td>
-									<?php
+									<!-- <?php
 										if($v['perbaikan_kunjungan'] != ''){
 									?><i class="ico ico-file"></i><?php
 										}else{
-									?><input name="perbaikan[]" value="<?=$v['idtbl_skp'].'-'.$v['idtbl_kunjungan']?>" type="checkbox" /><?php
+									?><input name="perbaikan[]" value="<?=$v['idtbl_skp'].'-'.$v['idtbl_kunjungan'].'-'.$v['perbaikan_kunjungan']?>" type="checkbox" /><?php
 										}
-									?>
-
+									?> -->
+									<input name="perbaikan[]" value="<?=$v['idtbl_skp'].'_'.$v['idtbl_kunjungan'].'_'.$v['perbaikan_kunjungan']?>" type="checkbox" />
 								</td>
 	                            <td><?=$x?></td>
 	                            <td><?=$v['namaind_produk']?></td>
 	                            <td><?=date("d-m-Y", strtotime($v['tgl_kunjungan']))?></td>
 	                            <td><?=$v['pic_kunjungan']?></td>
-	                            <td><a class="btn btn-xs btn-block btn-danger" href="<?=site_url($v['temuan_kunjungan'])?>" target="_blank"><i class="ico ico-file"></i> File Temuan</a></td>
+	                            <td>
+	                            	<a class="btn btn-xs btn-block btn-danger" href="<?=site_url($v['temuan_kunjungan'])?>" target="_blank"><i class="ico ico-file"></i> File Temuan</a>
+	                            </td>
 	                            <td>
 									<?php if($v['perbaikan_kunjungan'] != ""){ ?>
-									<a class="btn btn-xs btn-block btn-danger" href="<?=site_url($v['temuan_kunjungan'])?>">
-										<i class="ico ico-file"></i> File Temuan
-									</a>
+									<a class="btn btn-xs btn-block btn-primary" href="<?=site_url($v['perbaikan_kunjungan'])?>" target="_blank"><i class="ico ico-file"></i> File Perbaikan</a>
 									<?php } else { ?>
 										<i class="ico ico-file-remove"></i> Belum Upload
 									<?php } ?>
 								</td>
 	                            <td><?php if($v['uker_kunjungan']=='kp'){echo 'KKP'; }else{ echo ucfirst($v['uker_kunjungan']); } ?></td>
-	                            <td><?=$v['status_kunjungan']?></td>
+	                            <td>
+	                            	<?php if($v['perbaikan_kunjungan'] != ""){ ?>
+	                            		Revisi Perbaikan
+	                            	<?php } else { ?>
+	                            		<?=$v['status_kunjungan']?>
+	                            	<?php } ?>
+	                            	
+	                            </td>
 	                        </tr>
 							<?php $x++; } ?>
 	                    </tbody>
