@@ -15,12 +15,12 @@
 								</th>
 								<th>#</th>
 								<th>Nama UPI</th>
-								<th>Provinsi</th>
+								<!-- <th>Provinsi</th> -->
 								<th>File Perbaikan</th>
 								<th>Nama Produk</th>
 								<th>Pembina Mutu</th>
 								<th>Status</th>
-								<th style="width:40px;"></th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -37,7 +37,7 @@
 									</td>
 									<td><?=$x?></td>
 									<td><?=strtoupper($value['nama_upi'])?></td>
-									<td><?=$value['nama_provinsi']?></td>
+									<!-- <td><?=$value['nama_provinsi']?></td> -->
 									<td>
 										<?php
 											if($value['status_kunjungan'] == 'Menunggu Perbaikan'){
@@ -60,7 +60,8 @@
 										?>
 									</td>
 									<td>
-										<a class="btn btn-xs btn-inverse" href="<?php echo site_url('kunjungan/perbaikan_detail/'.$value['idtbl_skp']);?>"><i class="ico ico-search"></i> Detail</a>
+										<a class="btn btn-xs btn-success" href="<?php echo site_url('kunjungan/perbaikan_edit/'.$value['idtbl_skp']);?>"><i class="ico ico-edit"></i></a>
+										<a class="btn btn-xs btn-primary" href="<?php echo site_url('kunjungan/perbaikan_detail/'.$value['idtbl_skp']);?>"><i class="ico ico-search"></i></a>
 									</td>
 								</tr>
 							<?php $x++; } ?>
